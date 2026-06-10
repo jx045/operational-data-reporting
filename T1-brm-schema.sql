@@ -126,29 +126,50 @@ ALTER TABLE job
 
 
 -- QUOTE
+-- Create the QUOTE table to store customer hire quotes prepared by truck dispatchers.
+CREATE TABLE quote (
+    quote_no              NUMBER(5) NOT NULL,
+    quote_prepared_date   DATE NOT NULL,
+    quote_pref_start_date DATE NOT NULL,
+    quote_start_location  VARCHAR2(50) NOT NULL,
+    quote_end_location    VARCHAR2(60) NOT NULL,
+    quote_cost            NUMBER(6,2) NOT NULL,
+    cust_no               NUMBER(4) NOT NULL,
+    emp_no                NUMBER(3) NOT NULL
+);
 
+COMMENT ON COLUMN quote.quote_no IS
+    'Quote number';
+
+COMMENT ON COLUMN quote.quote_prepared_date IS
+    'Date the quote was prepared';
+
+COMMENT ON COLUMN quote.quote_pref_start_date IS
+    'Preferred start date for the quote';
+
+COMMENT ON COLUMN quote.quote_start_location IS
+    'Start location for the quote';
+
+COMMENT ON COLUMN quote.quote_end_location IS
+    'End location for the quote';
+
+COMMENT ON COLUMN quote.quote_cost IS
+    'Quoted cost';
+
+COMMENT ON COLUMN quote.cust_no IS
+    'Identifier for customer who requested the quote';
+
+COMMENT ON COLUMN quote.emp_no IS
+    'Employee number of the truck dispatcher who prepared the quote';
+
+ALTER TABLE quote
+    ADD CONSTRAINT quote_pk PRIMARY KEY ( quote_no );
+
+ALTER TABLE quote
+    ADD CONSTRAINT quote_cost_chk CHECK ( quote_cost >= 0 );
+
+ALTER TABLE quote
+    ADD CONSTRAINT quote_start_date_chk CHECK ( quote_pref_start_date >= quote_prepared_date );
 
 -- Add all missing FK Constraints below here
 -- Add the self-referencing relationship for employees reporting to managers.
-ALTER TABLE employee
-    ADD CONSTRAINT employee_manager_fk FOREIGN KEY ( emp_no_manager )
-        REFERENCES employee ( emp_no );
-
--- Add foreign keys for jobs created from quotes, scheduled by employees, driven by employees,
--- and assigned to valid truck and trailer combinations.
-ALTER TABLE job
-    ADD CONSTRAINT quote_job_fk FOREIGN KEY ( quote_no )
-        REFERENCES quote ( quote_no );
-
-ALTER TABLE job
-    ADD CONSTRAINT employee_schedules_job_fk FOREIGN KEY ( sched_emp_no )
-        REFERENCES employee ( emp_no );
-
-ALTER TABLE job
-    ADD CONSTRAINT employee_drives_job_fk FOREIGN KEY ( driver_emp_no )
-        REFERENCES employee ( emp_no );
-
-ALTER TABLE job
-    ADD CONSTRAINT combination_job_fk FOREIGN KEY ( trailer_code, truck_vin )
-        REFERENCES combination ( trailer_code, truck_vin );
-
