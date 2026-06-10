@@ -173,3 +173,33 @@ ALTER TABLE quote
 
 -- Add all missing FK Constraints below here
 -- Add the self-referencing relationship for employees reporting to managers.
+ALTER TABLE employee
+    ADD CONSTRAINT employee_manager_fk FOREIGN KEY ( emp_no_manager )
+        REFERENCES employee ( emp_no );
+
+-- Add foreign keys for quotes requested by customers and prepared by employees.
+ALTER TABLE quote
+    ADD CONSTRAINT customer_quote_fk FOREIGN KEY ( cust_no )
+        REFERENCES customer ( cust_no );
+
+ALTER TABLE quote
+    ADD CONSTRAINT employee_quote_fk FOREIGN KEY ( emp_no )
+        REFERENCES employee ( emp_no );
+
+-- Add foreign keys for jobs created from quotes, scheduled by employees, driven by employees,
+-- and assigned to valid truck and trailer combinations.
+ALTER TABLE job
+    ADD CONSTRAINT quote_job_fk FOREIGN KEY ( quote_no )
+        REFERENCES quote ( quote_no );
+
+ALTER TABLE job
+    ADD CONSTRAINT employee_schedules_job_fk FOREIGN KEY ( sched_emp_no )
+        REFERENCES employee ( emp_no );
+
+ALTER TABLE job
+    ADD CONSTRAINT employee_drives_job_fk FOREIGN KEY ( driver_emp_no )
+        REFERENCES employee ( emp_no );
+
+ALTER TABLE job
+    ADD CONSTRAINT combination_job_fk FOREIGN KEY ( trailer_code, truck_vin )
+        REFERENCES combination ( trailer_code, truck_vin );
