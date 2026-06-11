@@ -8,7 +8,7 @@
 Indicate if AI was used (Yes/No): Yes
 
 If AI was used:
-I used <<ChatGPT>>
+I used <<ChatGPT>> to assist with generating and refining Task 2 sample data. 
 I used these prompts: 
 1. Please generate valid Task 2 Oracle SQL insert statements for FIT2094 Assignment 2 BRM.
 2. Ensure the data meets the brief requirements for 10 employees, 30 quotes, and 20 jobs.
