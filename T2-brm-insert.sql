@@ -8,11 +8,12 @@
 Indicate if AI was used (Yes/No): Yes
 
 If AI was used:
-I used <<ChatGPT>> to assist with generating and refining Task 2 sample data. 
+I used Google Gemini to assist with generating and refining Task 2 sample data. 
 I used these prompts: 
 1. Please generate valid Task 2 Oracle SQL insert statements for FIT2094 Assignment 2 BRM.
 2. Ensure the data meets the brief requirements for 10 employees, 30 quotes, and 20 jobs.
 3. Ensure all primary keys are hardcoded below 100, dates are between 1 May 2026 and 31 July 2026, and all jobs use valid truck/trailer combinations.
+4. Treat all inserts as one transaction and include a single COMMIT; at the end.
 */
 
 --------------------------------------
