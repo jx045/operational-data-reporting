@@ -169,4 +169,19 @@ WHERE quote_no = (
 COMMIT;
 
 --3(e)
+-- Remove the cancelled job for Victoria Ella while leaving the original quote in the system.
 
+DELETE FROM job
+WHERE quote_no = (
+    SELECT q.quote_no
+    FROM quote q
+         JOIN customer c
+         ON q.cust_no = c.cust_no
+    WHERE UPPER(c.cust_gname) = 'VICTORIA'
+      AND UPPER(c.cust_fname) = 'ELLA'
+      AND UPPER(c.cust_bname) = UPPER('Flintstone Store')
+      AND q.quote_prepared_date >= TO_DATE('17-05-2026', 'DD-MM-YYYY')
+      AND q.quote_prepared_date < TO_DATE('18-05-2026', 'DD-MM-YYYY')
+);
+
+COMMIT;
