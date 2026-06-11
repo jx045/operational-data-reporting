@@ -10,6 +10,25 @@
 */
 
 --3(a)
+-- Create the three sequences required for new EMPLOYEE, QUOTE and JOB primary keys.
+
+DROP SEQUENCE employee_seq;
+
+DROP SEQUENCE quote_seq;
+
+DROP SEQUENCE job_seq;
+
+CREATE SEQUENCE employee_seq
+    START WITH 300
+    INCREMENT BY 5;
+
+CREATE SEQUENCE quote_seq
+    START WITH 300
+    INCREMENT BY 5;
+
+CREATE SEQUENCE job_seq
+    START WITH 300
+    INCREMENT BY 5;
 
 
 --3(b)
