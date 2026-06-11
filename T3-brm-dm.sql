@@ -61,6 +61,79 @@ INSERT INTO employee (
 COMMIT;
 
 --3(c)
+-- Record the quote prepared by Aurello Brown and the paid job assigned from it.
+
+INSERT INTO quote (
+    quote_no,
+    quote_prepared_date,
+    quote_pref_start_date,
+    quote_start_location,
+    quote_end_location,
+    quote_cost,
+    cust_no,
+    emp_no
+) VALUES (
+    quote_seq.NEXTVAL,
+    TO_DATE('17-05-2026', 'DD-MM-YYYY'),
+    TO_DATE('25-05-2026', 'DD-MM-YYYY'),
+    '29 Kuranda Road, Adelaide SA 5030',
+    '9 Albatros Drive, Mount Gambier SA 5270',
+    1000,
+    (
+        SELECT cust_no
+        FROM customer
+        WHERE UPPER(cust_gname) = 'VICTORIA'
+          AND UPPER(cust_fname) = 'ELLA'
+          AND UPPER(cust_bname) = UPPER('Flintstone Store')
+    ),
+    (
+        SELECT emp_no
+        FROM employee
+        WHERE UPPER(emp_gname) = UPPER('Aurello')
+          AND UPPER(emp_fname) = UPPER('Brown')
+          AND emp_contact_no = '0431952053'
+          AND emp_role = 'T'
+    )
+);
+
+INSERT INTO job (
+    job_no,
+    job_pickup_dt,
+    job_intended_dropoff_dt,
+    job_cost,
+    job_payment_made,
+    quote_no,
+    sched_emp_no,
+    driver_emp_no,
+    trailer_code,
+    truck_vin
+) VALUES (
+    job_seq.NEXTVAL,
+    TO_DATE('25-05-2026 09:00', 'DD-MM-YYYY HH24:MI'),
+    TO_DATE('25-05-2026 14:00', 'DD-MM-YYYY HH24:MI'),
+    NULL,
+    'Y',
+    quote_seq.CURRVAL,
+    (
+        SELECT emp_no
+        FROM employee
+        WHERE UPPER(emp_gname) = UPPER('Aurello')
+          AND UPPER(emp_fname) = UPPER('Brown')
+          AND emp_contact_no = '0431952053'
+          AND emp_role = 'T'
+    ),
+    (
+        SELECT emp_no
+        FROM employee
+        WHERE UPPER(emp_gname) = UPPER('Michael')
+          AND UPPER(emp_fname) = UPPER('Johnson')
+          AND emp_role = 'D'
+    ),
+    'TRL08',
+    '1HGBH41JXMN109186'
+);
+
+COMMIT;
 
 
 --3(d)
