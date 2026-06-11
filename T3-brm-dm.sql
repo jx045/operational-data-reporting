@@ -137,7 +137,36 @@ COMMIT;
 
 
 --3(d)
+-- Shift Victoria Ella's job pickup time to 2 PM and record the revised job cost.
 
+UPDATE job
+SET job_pickup_dt = TO_DATE('25-05-2026 14:00', 'DD-MM-YYYY HH24:MI'),
+    job_intended_dropoff_dt = TO_DATE('25-05-2026 19:00', 'DD-MM-YYYY HH24:MI'),
+    job_cost = (
+        SELECT q.quote_cost * 1.2
+        FROM quote q
+             JOIN customer c
+             ON q.cust_no = c.cust_no
+        WHERE UPPER(c.cust_gname) = 'VICTORIA'
+          AND UPPER(c.cust_fname) = 'ELLA'
+          AND UPPER(c.cust_bname) = UPPER('Flintstone Store')
+          AND q.quote_prepared_date >= TO_DATE('17-05-2026', 'DD-MM-YYYY')
+          AND q.quote_prepared_date < TO_DATE('18-05-2026', 'DD-MM-YYYY')
+    ),
+    job_payment_made = 'Y'
+WHERE quote_no = (
+    SELECT q.quote_no
+    FROM quote q
+         JOIN customer c
+         ON q.cust_no = c.cust_no
+    WHERE UPPER(c.cust_gname) = 'VICTORIA'
+      AND UPPER(c.cust_fname) = 'ELLA'
+      AND UPPER(c.cust_bname) = UPPER('Flintstone Store')
+      AND q.quote_prepared_date >= TO_DATE('17-05-2026', 'DD-MM-YYYY')
+      AND q.quote_prepared_date < TO_DATE('18-05-2026', 'DD-MM-YYYY')
+);
+
+COMMIT;
 
 --3(e)
 
