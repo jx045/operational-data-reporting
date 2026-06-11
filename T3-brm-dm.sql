@@ -32,7 +32,33 @@ CREATE SEQUENCE job_seq
 
 
 --3(b)
+-- Add Aurello Brown as a new truck dispatcher reporting to Sarah Mitchell.
 
+INSERT INTO employee (
+    emp_no,
+    emp_gname,
+    emp_fname,
+    emp_contact_no,
+    emp_licenceno,
+    emp_role,
+    emp_no_manager
+) VALUES (
+    employee_seq.NEXTVAL,
+    'Aurello',
+    'Brown',
+    '0431952053',
+    NULL,
+    'T',
+    (
+        SELECT emp_no
+        FROM employee
+        WHERE UPPER(emp_gname) = UPPER('Sarah')
+          AND UPPER(emp_fname) = UPPER('Mitchell')
+          AND emp_role = 'B'
+    )
+);
+
+COMMIT;
 
 --3(c)
 
