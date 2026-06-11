@@ -52,8 +52,9 @@ COMMENT ON COLUMN employee.emp_role IS
     'Employee role: Manager (B), Truck Dispatcher (T), Mechanic (M), or Driver (D)';
 
 COMMENT ON COLUMN employee.emp_no_manager IS
-    'Employee number of the manager this employee reports to';
+    'Identifier for manager employee';
 
+-- Add EMPLOYEE primary key, unique, and role rule constraints.
 ALTER TABLE employee
     ADD CONSTRAINT employee_pk PRIMARY KEY ( emp_no );
 
