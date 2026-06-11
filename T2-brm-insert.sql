@@ -19,7 +19,25 @@ I used these prompts:
 --INSERT INTO employee
 --------------------------------------
 -- Employee data includes managers, dispatchers, a mechanic, and drivers.
+-- The data supports Task 3 by including Sarah Mitchell and Michael Johnson.
 
+INSERT INTO employee (
+    emp_no,
+    emp_gname,
+    emp_fname,
+    emp_contact_no,
+    emp_licenceno,
+    emp_role,
+    emp_no_manager
+) VALUES (
+    1,
+    'Sarah',
+    'Mitchell',
+    '0401000001',
+    NULL,
+    'B',
+    NULL
+);
 
 INSERT INTO employee (
     emp_no,
@@ -111,6 +129,23 @@ INSERT INTO employee (
     2
 );
 
+INSERT INTO employee (
+    emp_no,
+    emp_gname,
+    emp_fname,
+    emp_contact_no,
+    emp_licenceno,
+    emp_role,
+    emp_no_manager
+) VALUES (
+    7,
+    'Michael',
+    'Johnson',
+    '0401000007',
+    'DLIC0000001',
+    'D',
+    1
+);
 
 INSERT INTO employee (
     emp_no,
