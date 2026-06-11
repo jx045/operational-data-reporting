@@ -67,6 +67,19 @@ ALTER TABLE employee
 ALTER TABLE employee
     ADD CONSTRAINT employee_role_chk CHECK ( emp_role IN ( 'B', 'T', 'M', 'D' ) );
 
+ALTER TABLE employee
+    ADD CONSTRAINT employee_driver_licence_chk CHECK (
+        ( emp_role = 'D' AND emp_licenceno IS NOT NULL )
+        OR
+        ( emp_role <> 'D' AND emp_licenceno IS NULL )
+    );
+
+ALTER TABLE employee
+    ADD CONSTRAINT employee_manager_required_chk CHECK (
+        ( emp_role = 'B' AND emp_no_manager IS NULL )
+        OR
+        ( emp_role <> 'B' AND emp_no_manager IS NOT NULL )
+    );
 
 -- JOB
 -- Create the JOB table to store scheduled jobs created from accepted quotes.
@@ -115,6 +128,9 @@ COMMENT ON COLUMN job.truck_vin IS
 
 ALTER TABLE job
     ADD CONSTRAINT job_pk PRIMARY KEY ( job_no );
+
+ALTER TABLE job
+    ADD CONSTRAINT job_quote_no_uq UNIQUE ( quote_no );
 
 ALTER TABLE job
     ADD CONSTRAINT job_payment_made_chk CHECK ( job_payment_made IN ( 'Y', 'N' ) );
