@@ -30,12 +30,11 @@ UPDATE quote
 SET quote_assigned = 'N';
 
 -- Set the current status to assigned for quotes that have a related JOB record.
-UPDATE quote q
+UPDATE quote
 SET quote_assigned = 'Y'
-WHERE EXISTS (
-    SELECT 1
-    FROM job j
-    WHERE j.quote_no = q.quote_no
+WHERE quote_no IN (
+    SELECT quote_no
+    FROM job
 );
 
 -- Enforce the default and valid values for future quote assignment status.
