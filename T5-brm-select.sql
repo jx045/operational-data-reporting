@@ -10,8 +10,11 @@
 */
 
 /* (a) */
--- Show customers with more than one quote whose average quote cost is greater than the overall average quote cost.
+-- PLEASE PLACE REQUIRED SQL SELECT STATEMENT FOR THIS PART HERE
+-- ENSURE that your query is formatted and has a semicolon
+-- (;) at the end of this answer
 
+-- Show customers with more than one quote whose average quote cost is greater than the overall average quote cost.
 SELECT
     c.cust_no AS cust_no,
     CASE
@@ -50,6 +53,10 @@ ORDER BY
 
 
 /* (b) */
+-- PLEASE PLACE REQUIRED SQL SELECT STATEMENT FOR THIS PART HERE
+-- ENSURE that your query is formatted and has a semicolon
+-- (;) at the end of this answer
+
 -- Show each employee with their role, manager, and number of jobs scheduled.
 -- Only truck dispatchers display a job count; other roles display a blank value.
 SELECT
@@ -106,6 +113,10 @@ ORDER BY
 
 
 /* (c) */
+-- PLEASE PLACE REQUIRED SQL SELECT STATEMENT FOR THIS PART HERE
+-- ENSURE that your query is formatted and has a semicolon
+-- (;) at the end of this answer
+
 -- Show all valid truck and trailer combinations recorded in COMBINATION,
 -- including combinations that have never been used in a job.
 
