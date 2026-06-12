@@ -75,14 +75,68 @@ db.brm_customer.find(
 // (;) at the end of this answer
 
 // (i)  Add the new customer
-
-
-// (ii) Add new quote
-
+db.brm_customer.insertOne(
+    {
+        "_id": 1001,
+        "customer_name": "Patrick Bosse",
+        "customer_business": "-",
+        "customer_address": "25 Market Street, Melbourne, 3000",
+        "customer_phone": "0499001001",
+        "customer_stats": {
+            "number_of_quotes": 0,
+            "number_of_jobs": 0,
+            "total_paid_jobcost": "-",
+            "total_unpaid_jobcost": "-"
+        },
+        "quotes": []
+    }
+);
 
 
 // Show the customer details
+db.brm_customer.find(
+    { "_id": 1001 }
+);
 
+
+// (ii) Add new quote
+// Add the new quote to Patrick's quotes array.
+// Update Patrick's summary statistics after the quote is assigned to a paid job.
+db.brm_customer.updateOne(
+    { "_id": 1001 },
+    {
+        "$push": {
+            "quotes": {
+                "quote_no": 2002,
+                "quote_prepared_on": "01-Jul-2026",
+                "preferred_start_date": "10-Jul-2026",
+                "start_location": "Adelaide SA",
+                "end_location": "Melbourne VIC",
+                "quote_cost": "$3,200.00",
+                "assigned_to_job": "Y",
+                "job_cost": "$3,200.00"
+            }
+        }
+    }
+);
+
+db.brm_customer.updateOne(
+    { "_id": 1001 },
+    {
+        "$set": {
+            "customer_stats.number_of_quotes": 1,
+            "customer_stats.number_of_jobs": 1,
+            "customer_stats.total_paid_jobcost": "$3,200.00",
+            "customer_stats.total_unpaid_jobcost": "-"
+        }
+    }
+);
+
+
+// Show the customer details
+db.brm_customer.find(
+    { "_id": 1001 }
+);
 
 
 // End of file - do not remove
