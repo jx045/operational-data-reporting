@@ -110,7 +110,7 @@ INSERT INTO job (
 ) VALUES (
     job_seq.NEXTVAL,
     TO_DATE('25-05-2026 09:00', 'DD-MM-YYYY HH24:MI'),
-    TO_DATE('25-05-2026 14:00', 'DD-MM-YYYY HH24:MI'),
+    TO_DATE('25-05-2026 09:00', 'DD-MM-YYYY HH24:MI') + 5 / 24,
     NULL,
     'Y',
     quote_seq.CURRVAL,
@@ -141,7 +141,7 @@ COMMIT;
 
 UPDATE job
 SET job_pickup_dt = TO_DATE('25-05-2026 14:00', 'DD-MM-YYYY HH24:MI'),
-    job_intended_dropoff_dt = TO_DATE('25-05-2026 19:00', 'DD-MM-YYYY HH24:MI'),
+    job_intended_dropoff_dt = TO_DATE('25-05-2026 14:00', 'DD-MM-YYYY HH24:MI') + 5 / 24,
     job_cost = (
         SELECT q.quote_cost * 1.2
         FROM quote q
