@@ -126,6 +126,8 @@ COMMENT ON COLUMN job.trailer_code IS
 COMMENT ON COLUMN job.truck_vin IS
     'Vehicle Identification Number (VIN) of the truck used in the job';
 
+-- Add JOB constraints for identity, one job per quote, valid payment flag,
+-- valid revised job cost, and sensible pickup/drop-off timing.
 ALTER TABLE job
     ADD CONSTRAINT job_pk PRIMARY KEY ( job_no );
 
@@ -179,6 +181,7 @@ COMMENT ON COLUMN quote.cust_no IS
 COMMENT ON COLUMN quote.emp_no IS
     'Employee number of the truck dispatcher who prepared the quote';
 
+-- Add QUOTE constraints for identity, valid quote cost, and valid quote date order.
 ALTER TABLE quote
     ADD CONSTRAINT quote_pk PRIMARY KEY ( quote_no );
 
