@@ -91,7 +91,7 @@ COMMENT ON COLUMN truck_service.service_start_dt IS
 COMMENT ON COLUMN truck_service.service_end_dt IS
     'Date and time when the truck service is completed';
 
--- Add the primary key, date validation, and relationship to the serviced truck.
+-- Add the primary key, date validation and relationship to the serviced truck.
 ALTER TABLE truck_service
     ADD CONSTRAINT truck_service_pk PRIMARY KEY ( service_no );
 
