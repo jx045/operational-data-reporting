@@ -53,6 +53,56 @@ ORDER BY
 -- PLEASE PLACE REQUIRED SQL SELECT STATEMENT FOR THIS PART HERE
 -- ENSURE that your query is formatted and has a semicolon
 -- (;) at the end of this answer
+SELECT
+    e.emp_no AS emp_no,
+    CASE
+        WHEN e.emp_gname IS NULL THEN
+            e.emp_fname
+        WHEN e.emp_fname IS NULL THEN
+            e.emp_gname
+        ELSE
+            e.emp_gname || ' ' || e.emp_fname
+    END AS employee_name,
+    CASE e.emp_role
+        WHEN 'B' THEN
+            'Manager'
+        WHEN 'T' THEN
+            'Truck Dispatcher'
+        WHEN 'M' THEN
+            'Mechanic'
+        WHEN 'D' THEN
+            'Driver'
+    END AS role,
+    CASE
+        WHEN e.emp_no_manager IS NULL THEN
+            'No Manager'
+        WHEN m.emp_gname IS NULL THEN
+            m.emp_fname
+        WHEN m.emp_fname IS NULL THEN
+            m.emp_gname
+        ELSE
+            m.emp_gname || ' ' || m.emp_fname
+    END AS manager_name,
+    CASE
+        WHEN e.emp_role = 'T' THEN
+            COUNT(j.job_no)
+    END AS jobs_dispatched
+FROM
+    employee e
+    LEFT OUTER JOIN employee m
+    ON e.emp_no_manager = m.emp_no
+    LEFT OUTER JOIN job j
+    ON e.emp_no = j.sched_emp_no
+GROUP BY
+    e.emp_no,
+    e.emp_gname,
+    e.emp_fname,
+    e.emp_role,
+    e.emp_no_manager,
+    m.emp_gname,
+    m.emp_fname
+ORDER BY
+    e.emp_no;
 
 
 
