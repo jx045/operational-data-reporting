@@ -50,9 +50,8 @@ ORDER BY
 
 
 /* (b) */
--- PLEASE PLACE REQUIRED SQL SELECT STATEMENT FOR THIS PART HERE
--- ENSURE that your query is formatted and has a semicolon
--- (;) at the end of this answer
+-- Show each employee with their role, manager, and number of jobs scheduled.
+-- Only truck dispatchers display a job count; other roles display a blank value.
 SELECT
     e.emp_no AS emp_no,
     CASE
@@ -107,8 +106,58 @@ ORDER BY
 
 
 /* (c) */
--- PLEASE PLACE REQUIRED SQL SELECT STATEMENT FOR THIS PART HERE
--- ENSURE that your query is formatted and has a semicolon
--- (;) at the end of this answer
+-- Show all valid truck and trailer combinations recorded in COMBINATION,
+-- including combinations that have never been used in a job.
 
-
+SELECT
+    c.truck_vin AS truck_vin,
+    t.truck_rego AS truck_rego,
+    c.trailer_code AS trailer_code,
+    LPAD(TO_CHAR(tr.trailer_purchase_cost, 'FM$999,999,990.00'), 21) AS trailer_purchase_cost,
+    COUNT(j.job_no) AS num_jobs,
+    CASE
+        WHEN COUNT(j.job_no) = 0 THEN
+            LPAD('No jobs', 17)
+        ELSE
+            LPAD(TO_CHAR(SUM(q.quote_cost), 'FM$999,999,990.00'), 17)
+    END AS total_quoted_cost,
+    CASE
+        WHEN COUNT(j.job_no) = 0 THEN
+            'Never Used'
+        WHEN COUNT(j.job_no) > (
+            SELECT
+                AVG(job_count)
+            FROM (
+                SELECT
+                    COUNT(*) AS job_count
+                FROM
+                    job
+                GROUP BY
+                    truck_vin,
+                    trailer_code
+            )
+        ) THEN
+            'High Use'
+        ELSE
+            'Standard Use'
+    END AS usage
+FROM
+    combination c
+    JOIN truck t
+    ON c.truck_vin = t.truck_vin
+    JOIN trailer tr
+    ON c.trailer_code = tr.trailer_code
+    LEFT OUTER JOIN job j
+    ON c.truck_vin = j.truck_vin
+       AND c.trailer_code = j.trailer_code
+    LEFT OUTER JOIN quote q
+    ON j.quote_no = q.quote_no
+GROUP BY
+    c.truck_vin,
+    t.truck_rego,
+    c.trailer_code,
+    tr.trailer_purchase_cost
+ORDER BY
+    COUNT(j.job_no) DESC,
+    c.truck_vin,
+    c.trailer_code;
