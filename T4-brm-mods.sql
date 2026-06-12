@@ -13,6 +13,7 @@
 -- Add quote assignment status attributes to the live QUOTE table.
 -- A quote is assigned when it has a related JOB row; otherwise it is unassigned.
 
+-- Initialise quote_assigned using the current live JOB table
 ALTER TABLE quote ADD (
     quote_assigned CHAR(1),
     quote_unassigned_reason VARCHAR2(200)
