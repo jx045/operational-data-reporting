@@ -106,13 +106,13 @@ COMMENT ON COLUMN job.job_intended_dropoff_dt IS
     'Job intended drop-off date and time';
 
 COMMENT ON COLUMN job.job_cost IS
-    'Actual job cost if different from the quote cost';
+    'Actual job cost (if different from the quote cost)';
 
 COMMENT ON COLUMN job.job_payment_made IS
-    'Flag to note whether the job has been paid, Y or N';
+    'Flag to note whether the job has been paid (Y or N)';
 
 COMMENT ON COLUMN job.quote_no IS
-    'Quote number associated with the job';
+    'Quote number';
 
 COMMENT ON COLUMN job.sched_emp_no IS
     'Employee number of the truck dispatcher who scheduled the job';
