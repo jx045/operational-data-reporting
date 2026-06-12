@@ -10,7 +10,8 @@
 */
 
 --3(a)
--- Create the three sequences required for new EMPLOYEE, QUOTE and JOB primary keys.
+-- Recreate the required sequences so new primary keys generated in Task 3 start from 300 and increase by 5. 
+-- The DROP statements allow the script allow the script to be rerun during testing before the sequences are recreated.
 
 DROP SEQUENCE employee_seq;
 
@@ -32,7 +33,10 @@ CREATE SEQUENCE job_seq
 
 
 --3(b)
--- Add Aurello Brown as a new truck dispatcher reporting to Sarah Mitchell.
+-- Insert Aurello Brown as a new truck dispatcher using EMPLOYEE_SEQ for the new
+-- employee number. Sarah Mitchell's employee number is looked up from the live
+-- EMPLOYEE table instead of being hardcoded, so the insert is based on existing
+-- data and remains valid if her employee number changes.
 
 INSERT INTO employee (
     emp_no,
@@ -61,7 +65,9 @@ INSERT INTO employee (
 COMMIT;
 
 --3(c)
--- Record the quote prepared by Aurello Brown and the paid job assigned from it.
+-- Create Victoria Ella's new quote and the related job as one logical transaction.
+-- Employee and customer numbers are found using subqueries. 
+-- The intended drop-off time is calculated as pickup time plus 5 hours using date arithmetic.
 
 INSERT INTO quote (
     quote_no,
@@ -137,7 +143,11 @@ COMMIT;
 
 
 --3(d)
--- Shift Victoria Ella's job pickup time to 2 PM and record the revised job cost.
+-- Update the job created for Victoria Ella after the pickup time changes to 2 PM.
+-- The target quote/job is identified by the customer details and quote prepared
+-- date to avoid relying on a hardcoded quote number. The new drop-off time is
+-- recalculated from the revised pickup time, and the job cost is set to 120% of
+-- the original quoted cost.
 
 UPDATE job
 SET job_pickup_dt = TO_DATE('25-05-2026 14:00', 'DD-MM-YYYY HH24:MI'),
@@ -169,7 +179,9 @@ WHERE quote_no = (
 COMMIT;
 
 --3(e)
--- Remove the cancelled job for Victoria Ella while leaving the original quote in the system.
+-- Cancel Victoria Ella's assigned job by deleting only the JOB row linked to the
+-- relevant quote. The quote itself is kept in the database because the customer
+-- request and prepared quote still need to remain recorded.
 
 DELETE FROM job
 WHERE quote_no = (
