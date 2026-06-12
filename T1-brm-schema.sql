@@ -221,5 +221,5 @@ ALTER TABLE job
         REFERENCES employee ( emp_no );
 
 ALTER TABLE job
-    ADD CONSTRAINT combination_job_fk FOREIGN KEY ( trailer_code, truck_vin )
-        REFERENCES combination ( trailer_code, truck_vin );
+    ADD CONSTRAINT combination_job_fk FOREIGN KEY ( truck_vin, trailer_code )
+        REFERENCES combination ( truck_vin, trailer_code );
