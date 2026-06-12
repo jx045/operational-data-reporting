@@ -23,13 +23,13 @@ COMMENT ON COLUMN quote.quote_assigned IS
     'Flag to indicate whether the quote has been assigned to a job, Y or N';
 
 COMMENT ON COLUMN quote.quote_unassigned_reason IS
-    'Reason why an unassigned quote was not converted to a job';
+    'Reason why an unassigned quote was not converted to a job by the preferred start date';
 
 -- Initialise all existing quotes as not assigned before setting assigned quotes.
 UPDATE quote
 SET quote_assigned = 'N';
 
--- Set quotes with a related job as assigned.
+-- Set the current status to assigned for quotes that have a related JOB record.
 UPDATE quote q
 SET quote_assigned = 'Y'
 WHERE EXISTS (
@@ -38,6 +38,7 @@ WHERE EXISTS (
     WHERE j.quote_no = q.quote_no
 );
 
+-- Enforce the default and valid values for future quote assignment status.
 ALTER TABLE quote
     MODIFY quote_assigned DEFAULT 'N';
 
@@ -86,6 +87,7 @@ COMMENT ON COLUMN truck_service.service_start_dt IS
 COMMENT ON COLUMN truck_service.service_end_dt IS
     'Date and time when the truck service is completed';
 
+-- Add the primary key, date validation, and relationship to the serviced truck.
 ALTER TABLE truck_service
     ADD CONSTRAINT truck_service_pk PRIMARY KEY ( service_no );
 
@@ -98,7 +100,7 @@ ALTER TABLE truck_service
     ADD CONSTRAINT truck_service_truck_fk FOREIGN KEY ( truck_vin )
         REFERENCES truck ( truck_vin );
 
-
+-- Store the expandable list of service task types, such as oil change or brake inspection.
 CREATE TABLE service_task_type (
     service_task_code CHAR(4) NOT NULL,
     service_task_name VARCHAR2(50) NOT NULL
@@ -110,13 +112,14 @@ COMMENT ON COLUMN service_task_type.service_task_code IS
 COMMENT ON COLUMN service_task_type.service_task_name IS
     'Name of service task type';
 
+-- Ensure each service task type has a unique identifier and name.
 ALTER TABLE service_task_type
     ADD CONSTRAINT service_task_type_pk PRIMARY KEY ( service_task_code );
 
 ALTER TABLE service_task_type
     ADD CONSTRAINT service_task_type_name_uq UNIQUE ( service_task_name );
 
-
+-- Record each task performed during a truck service, including the assigned mechanic and task note.
 CREATE TABLE truck_service_task (
     service_no        NUMBER(5) NOT NULL,
     service_task_code CHAR(4) NOT NULL,
@@ -136,16 +139,19 @@ COMMENT ON COLUMN truck_service_task.mechanic_emp_no IS
 COMMENT ON COLUMN truck_service_task.service_task_note IS
     'Free text note explaining the service task performed in this service';
 
+-- The composite primary key allows each service to include multiple different task types.
 ALTER TABLE truck_service_task
     ADD CONSTRAINT truck_service_task_pk PRIMARY KEY (
         service_no,
         service_task_code
     );
 
+-- Link each service task to its service occurrence and task type.
 ALTER TABLE truck_service_task
     ADD CONSTRAINT truck_service_task_service_fk FOREIGN KEY ( service_no )
         REFERENCES truck_service ( service_no );
 
+-- Link the mechanic for each task to EMPLOYEE.
 ALTER TABLE truck_service_task
     ADD CONSTRAINT truck_service_task_type_fk FOREIGN KEY ( service_task_code )
         REFERENCES service_task_type ( service_task_code );
