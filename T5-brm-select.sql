@@ -25,7 +25,7 @@ SELECT
             c.cust_gname || ' ' || c.cust_fname
     END AS customer_name,
     COUNT(q.quote_no) AS num_quotes,
-    TO_CHAR(AVG(q.quote_cost), 'FM$999,999,990.00') AS avg_quote_cost
+    TO_CHAR(AVG(q.quote_cost), 'FM$999,999,990.00') AS avg_quoted_cost
 FROM
     customer c
     JOIN quote q
@@ -61,7 +61,7 @@ SELECT
             e.emp_gname
         ELSE
             e.emp_gname || ' ' || e.emp_fname
-    END AS employee_name,
+    END AS emp_name,
     CASE e.emp_role
         WHEN 'B' THEN
             'Manager'
@@ -71,7 +71,7 @@ SELECT
             'Mechanic'
         WHEN 'D' THEN
             'Driver'
-    END AS role,
+    END AS emp_role_full,
     CASE
         WHEN e.emp_no_manager IS NULL THEN
             'No Manager'
@@ -111,8 +111,8 @@ ORDER BY
 
 SELECT
     c.truck_vin AS truck_vin,
-    t.truck_rego AS truck_rego,
-    c.trailer_code AS trailer_code,
+    RPAD(TRIM(t.truck_rego), 10) AS truck_rego,
+    RPAD(TRIM(c.trailer_code), 12) AS trailer_code,
     LPAD(TO_CHAR(tr.trailer_purchase_cost, 'FM$999,999,990.00'), 21) AS trailer_purchase_cost,
     COUNT(j.job_no) AS num_jobs,
     CASE
