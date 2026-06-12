@@ -25,11 +25,13 @@ COMMENT ON COLUMN quote.quote_assigned IS
 COMMENT ON COLUMN quote.quote_unassigned_reason IS
     'Reason why an unassigned quote was not converted to a job by the preferred start date';
 
--- Initialise all existing quotes as not assigned before setting assigned quotes.
+-- First mark all existing quotes as unassigned. This gives every existing row 
+-- a valid value before the column is made mandatory.
 UPDATE quote
 SET quote_assigned = 'N';
 
--- Set the current status to assigned for quotes that have a related JOB record.
+-- A quote is assigned only when its quote number appears in the JOB table. 
+-- Quotes with no matching job remain unassigned and keep a null reason.
 UPDATE quote
 SET quote_assigned = 'Y'
 WHERE quote_no IN (
@@ -37,7 +39,7 @@ WHERE quote_no IN (
     FROM job
 );
 
--- Enforce the default and valid values for future quote assignment status.
+-- The default supports future quotes, while the check constraint limits the status to the two allowed values.
 ALTER TABLE quote
     MODIFY quote_assigned DEFAULT 'N';
 
@@ -64,8 +66,10 @@ ORDER BY q.quote_no;
 
 
 --4(b)
--- Create service tables so that truck service occurrences and expandable task types
--- can be recorded without changing the table structure when new task types are added.
+-- Add a service design that separates service occurrences, reusable task types and the actual tasks completed during a service. 
+-- This avoids adding new columns whenever BRM introduces new types of service tasks. 
+-- This unique constraint supports a composite foreign key from service tasks. 
+-- It allows the database to check that the assigned employee is specifically recorded with the Mechanic role.
 
 ALTER TABLE employee
     ADD CONSTRAINT employee_no_role_uq UNIQUE ( emp_no,
