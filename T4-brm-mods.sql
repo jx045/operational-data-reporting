@@ -68,6 +68,10 @@ ORDER BY q.quote_no;
 -- Create service tables so that truck service occurrences and expandable task types
 -- can be recorded without changing the table structure when new task types are added.
 
+ALTER TABLE employee
+    ADD CONSTRAINT employee_no_role_uq UNIQUE ( emp_no,
+                                                emp_role );
+
 CREATE TABLE truck_service (
     service_no       NUMBER(5) NOT NULL,
     truck_vin        CHAR(17) NOT NULL,
@@ -124,6 +128,7 @@ CREATE TABLE truck_service_task (
     service_no        NUMBER(5) NOT NULL,
     service_task_code CHAR(4) NOT NULL,
     mechanic_emp_no   NUMBER(3) NOT NULL,
+    mechanic_emp_role CHAR(1) DEFAULT 'M' NOT NULL,
     service_task_note VARCHAR2(200) NOT NULL
 );
 
@@ -136,30 +141,44 @@ COMMENT ON COLUMN truck_service_task.service_task_code IS
 COMMENT ON COLUMN truck_service_task.mechanic_emp_no IS
     'Employee number of the mechanic who performed the service task';
 
+COMMENT ON COLUMN truck_service_task.mechanic_emp_role IS
+    'Employee role code for the mechanic assigned to this service task';
+
 COMMENT ON COLUMN truck_service_task.service_task_note IS
     'Free text note explaining the service task performed in this service';
 
--- The composite primary key allows each service to include multiple different task types.
+-- The composite primary key allows each service to include multiple task types
+-- and prevents the same task type from appearing more than once in the same service.
 ALTER TABLE truck_service_task
     ADD CONSTRAINT truck_service_task_pk PRIMARY KEY (
         service_no,
         service_task_code
     );
 
--- Link each service task to its service occurrence and task type.
+-- Ensure the recorded employee role for service tasks is always Mechanic.
+ALTER TABLE truck_service_task
+    ADD CONSTRAINT truck_service_task_mech_role_chk CHECK ( mechanic_emp_role = 'M' );
+
+-- Link each service task to its service occurrence.
 ALTER TABLE truck_service_task
     ADD CONSTRAINT truck_service_task_service_fk FOREIGN KEY ( service_no )
         REFERENCES truck_service ( service_no );
 
--- Link the mechanic for each task to EMPLOYEE.
+-- Link each performed task to the expandable service task type list.
 ALTER TABLE truck_service_task
     ADD CONSTRAINT truck_service_task_type_fk FOREIGN KEY ( service_task_code )
         REFERENCES service_task_type ( service_task_code );
 
--- mechanic_emp_no records the employee assigned as the mechanic for this task occurrence.
+-- Link the assigned mechanic to EMPLOYEE and enforce that the employee has role M.
 ALTER TABLE truck_service_task
-    ADD CONSTRAINT truck_service_task_mech_fk FOREIGN KEY ( mechanic_emp_no )
-        REFERENCES employee ( emp_no );
+    ADD CONSTRAINT truck_service_task_mech_fk FOREIGN KEY (
+        mechanic_emp_no,
+        mechanic_emp_role
+    )
+        REFERENCES employee (
+            emp_no,
+            emp_role
+        );
 
 DESC truck_service;
 
