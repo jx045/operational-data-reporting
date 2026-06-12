@@ -63,3 +63,99 @@ ORDER BY q.quote_no;
 
 
 --4(b)
+-- Create service tables so that truck service occurrences and expandable task types
+-- can be recorded without changing the table structure when new task types are added.
+
+CREATE TABLE truck_service (
+    service_no       NUMBER(5) NOT NULL,
+    truck_vin        CHAR(17) NOT NULL,
+    service_start_dt DATE NOT NULL,
+    service_end_dt   DATE
+);
+
+COMMENT ON COLUMN truck_service.service_no IS
+    'Identifier for truck service';
+
+COMMENT ON COLUMN truck_service.truck_vin IS
+    'Vehicle Identification Number (VIN) of the truck being serviced';
+
+COMMENT ON COLUMN truck_service.service_start_dt IS
+    'Date and time when the truck service starts';
+
+COMMENT ON COLUMN truck_service.service_end_dt IS
+    'Date and time when the truck service is completed';
+
+ALTER TABLE truck_service
+    ADD CONSTRAINT truck_service_pk PRIMARY KEY ( service_no );
+
+ALTER TABLE truck_service
+    ADD CONSTRAINT truck_service_dates_chk CHECK (
+        service_end_dt IS NULL OR service_end_dt > service_start_dt
+    );
+
+ALTER TABLE truck_service
+    ADD CONSTRAINT truck_service_truck_fk FOREIGN KEY ( truck_vin )
+        REFERENCES truck ( truck_vin );
+
+
+CREATE TABLE service_task_type (
+    service_task_code CHAR(4) NOT NULL,
+    service_task_name VARCHAR2(50) NOT NULL
+);
+
+COMMENT ON COLUMN service_task_type.service_task_code IS
+    'Identifier for service task type';
+
+COMMENT ON COLUMN service_task_type.service_task_name IS
+    'Name of service task type';
+
+ALTER TABLE service_task_type
+    ADD CONSTRAINT service_task_type_pk PRIMARY KEY ( service_task_code );
+
+ALTER TABLE service_task_type
+    ADD CONSTRAINT service_task_type_name_uq UNIQUE ( service_task_name );
+
+
+CREATE TABLE truck_service_task (
+    service_no        NUMBER(5) NOT NULL,
+    service_task_code CHAR(4) NOT NULL,
+    mechanic_emp_no   NUMBER(3) NOT NULL,
+    service_task_note VARCHAR2(200) NOT NULL
+);
+
+COMMENT ON COLUMN truck_service_task.service_no IS
+    'Identifier for truck service';
+
+COMMENT ON COLUMN truck_service_task.service_task_code IS
+    'Identifier for service task type performed during the service';
+
+COMMENT ON COLUMN truck_service_task.mechanic_emp_no IS
+    'Employee number of the mechanic who performed the service task';
+
+COMMENT ON COLUMN truck_service_task.service_task_note IS
+    'Free text note explaining the service task performed in this service';
+
+ALTER TABLE truck_service_task
+    ADD CONSTRAINT truck_service_task_pk PRIMARY KEY (
+        service_no,
+        service_task_code
+    );
+
+ALTER TABLE truck_service_task
+    ADD CONSTRAINT truck_service_task_service_fk FOREIGN KEY ( service_no )
+        REFERENCES truck_service ( service_no );
+
+ALTER TABLE truck_service_task
+    ADD CONSTRAINT truck_service_task_type_fk FOREIGN KEY ( service_task_code )
+        REFERENCES service_task_type ( service_task_code );
+
+-- mechanic_emp_no records the employee assigned as the mechanic for this task occurrence.
+ALTER TABLE truck_service_task
+    ADD CONSTRAINT truck_service_task_mech_fk FOREIGN KEY ( mechanic_emp_no )
+        REFERENCES employee ( emp_no );
+
+DESC truck_service;
+
+DESC service_task_type;
+
+DESC truck_service_task;
