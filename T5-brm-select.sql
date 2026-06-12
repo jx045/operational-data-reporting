@@ -15,6 +15,7 @@
 -- (;) at the end of this answer
 
 -- Show customers with more than one quote whose average quote cost is greater than the overall average quote cost.
+-- Business names are displayed first; personal names are only used when no business name is recorded.
 SELECT
     c.cust_no AS cust_no,
     CASE
@@ -38,6 +39,7 @@ GROUP BY
     c.cust_bname,
     c.cust_gname,
     c.cust_fname
+-- Filter groups by quote count and compare each customer average against the overall quote average.
 HAVING
     COUNT(q.quote_no) > 1
     AND AVG(q.quote_cost) > (
@@ -119,6 +121,7 @@ ORDER BY
 
 -- Show all valid truck and trailer combinations recorded in COMBINATION,
 -- including combinations that have never been used in a job.
+-- The total quoted cost uses quote cost only.
 
 SELECT
     c.truck_vin AS truck_vin,
