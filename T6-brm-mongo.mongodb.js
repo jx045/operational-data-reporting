@@ -41,7 +41,7 @@ db.brm_customer.insertMany([
 ]);
 
 
-// List all documents you added
+// List all documents added
 db.brm_customer.find();
 
 // (c)
